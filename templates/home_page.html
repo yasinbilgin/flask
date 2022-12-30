@@ -1,0 +1,127 @@
+{% extends "layout.html" %}
+{% block title %} Tool List {% endblock title %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col md-12">
+
+            <div class="jumbotron p-3">
+                <h2> Manage Your Tools
+                    <button type="button" class="btn btn-success float-right" data-toggle="modal"
+                            data-target="#mymodal">Add New Tool
+                    </button>
+                </h2>
+
+                {% with messages = get_flashed_messages() %}
+
+                {% if messages %}
+
+                {% for message in messages %}
+
+                <div class="alert alert-success alert-dismissable" role="alert">
+                    {{message}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+
+                {% endfor %}
+
+                {% endif %}
+
+                {% endwith %}
+
+                <table class="table table-hover table-dark">
+                    <tr>
+                        <th style="width:30%">ID</th>
+                        <th>Name</th>
+                        <th>Brand</th>
+                        <th>Action</th>
+                    </tr>
+                    {% for tool_list in tool_lists %}
+                    <tr>
+                        <td>{{ tool_list['id'] }}</a></td>
+                        <td>{{ tool_list['name'] }}</td>
+                        <td>{{ tool_list['brand'] }}</td>
+                        <td>
+                            <a href="/update/{{ tool_list['id'] }}" class="btn btn-warning btn-xs" data-toggle="modal"
+                               data-target="#modaledit{{ tool_list['id'] }}">Edit</a>
+                            <a href="/delete/{{ tool_list['id'] }}" class="btn btn-danger btn-xs"
+                               onclick="return confirm('Are You Sure To Delete ?')">Delete</a>
+                        </td>
+                    </tr>
+
+                    <!-- Modal Edit Tool -->
+                    <div id="modaledit{{ tool_list['id'] }}" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Update Tool Information</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ url_for('update_tool') }}" method="POST">
+
+                                        <div class="form-group">
+                                            <label>Name:</label>
+                                            <input type="hidden" name="id" value="{{ tool_list['id'] }}">
+                                            <input type="text" class="form-control" name="name" value="{{ tool_list['name'] }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Brand:</label>
+                                            <input type="text" class="form-control" name="brand" value="{{ tool_list['brand'] }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-primary" type="submit">Update</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+
+                </table>
+
+            </div>
+
+            <!-- Modal Add Tool -->
+            <div id="mymodal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Add New Tool</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ url_for('home_page') }}" method="POST">
+
+                                <div class="form-group">
+                                    <label>Name:</label>
+                                    <input type="text" class="form-control" name="name" required="1">
+                                </div>
+                                <div class="form-group">
+                                    <label>Brand:</label>
+                                    <input type="text" class="form-control" name="brand" required="1">
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary" type="submit">Add Tool</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
